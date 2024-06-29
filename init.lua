@@ -1,6 +1,5 @@
 require("osagie.core.options")
 
-
 local install_path = vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   vim.fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
@@ -9,27 +8,28 @@ end
 
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' 
-  use 'nvim-treesitter/nvim-treesitter' 
+  use {
+    'nvim-treesitter/nvim-treesitter', 
+    run = ':TSUpdate'
+  }
   use 'neovim/nvim-lspconfig' 
-  use 'gruvbox-community/gruvbox'
-  use 'hrsh7th/nvim-cmp'
-  use 'hrsh7th/cmp-nvim-lsp' 
+  use 'gruvbox-community/gruvbox' 
+  use 'hrsh7th/nvim-cmp' 
+  use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer' 
-  use 'hrsh7th/cmp-path'
+  use 'hrsh7th/cmp-path' 
   use 'hrsh7th/cmp-cmdline' 
   use 'L3MON4D3/LuaSnip' 
-  use 'saadparwaiz1/cmp_luasnip' 
+  use 'saadparwaiz1/cmp_luasnip'
 end)
 
-
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = {"go", "c", "rust", "javascript"},
+  ensure_installed = {"go", "c", "rust", "javascript", "swift"},
   highlight = {
     enable = true,
     additional_vim_regex_highlighting = false,
   },
 }
-
 
 local lspconfig = require'lspconfig'
 
@@ -63,9 +63,15 @@ lspconfig.clangd.setup{
   on_attach = on_attach,
 }
 
-lspconfig.rust_analyzer.setup{}
+lspconfig.rust_analyzer.setup{
+  on_attach = on_attach,
+}
 
 lspconfig.tsserver.setup{
+  on_attach = on_attach,
+}
+
+lspconfig.sourcekit.setup {
   on_attach = on_attach,
 }
 
@@ -78,17 +84,14 @@ cmp.setup({
       luasnip.lsp_expand(args.body)
     end,
   },
-  mapping = {
+  mapping = cmp.mapping.preset.insert({
     ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-n>'] = cmp.mapping.select_next_item(),
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.close(),
-    ['<CR>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Insert,
-      select = true,
-    },
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
     ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
@@ -107,7 +110,7 @@ cmp.setup({
         fallback()
       end
     end, { 'i', 's' }),
-  },
+  }),
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
@@ -124,3 +127,4 @@ vim.g.gruvbox_contrast_dark = "hard"
 vim.cmd [[colorscheme gruvbox]]
 
 vim.cmd [[highlight Comment guifg=#b8bb26]]
+
