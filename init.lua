@@ -20,11 +20,11 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-path' 
   use 'hrsh7th/cmp-cmdline' 
   use 'L3MON4D3/LuaSnip' 
-  use 'saadparwaiz1/cmp_luasnip'
+  use 'saadparwaiz1/cmp_luasnip' 
 end)
 
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = {"go", "c", "rust", "javascript", "swift"},
+  ensure_installed = {"go", "c", "cpp", "rust", "javascript", "swift", "odin"},
   highlight = {
     enable = true,
     additional_vim_regex_highlighting = false,
@@ -67,13 +67,16 @@ lspconfig.rust_analyzer.setup{
   on_attach = on_attach,
 }
 
-lspconfig.tsserver.setup{
+lspconfig.ts_ls.setup{
   on_attach = on_attach,
 }
 
 lspconfig.sourcekit.setup {
   on_attach = on_attach,
 }
+
+lspconfig.ols.setup({
+})
 
 local cmp = require'cmp'
 local luasnip = require'luasnip'
