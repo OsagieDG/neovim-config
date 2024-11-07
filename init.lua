@@ -24,7 +24,7 @@ require('packer').startup(function(use)
 end)
 
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = {"go", "c", "cpp", "rust", "javascript", "swift", "odin"},
+  ensure_installed = {"go", "odin", "c", "cpp", "lua", "rust", "javascript", "swift"},
   highlight = {
     enable = true,
     additional_vim_regex_highlighting = false,
@@ -61,6 +61,29 @@ lspconfig.gopls.setup{
 
 lspconfig.clangd.setup{
   on_attach = on_attach,
+}
+
+lspconfig.lua_ls.setup {
+  on_attach = on_attach,
+  settings = {
+    Lua = {
+      runtime = {
+        version = 'LuaJIT',
+        path = vim.split(package.path, ';')
+      },
+      diagnostics = {
+        globals = {'vim'}
+      },
+      workspace = {
+        library = vim.api.nvim_get_runtime_file("", true),
+        maxPreload = 2000,
+        preloadFileSize = 1000,
+      },
+      telemetry = {
+        enable = false,
+      },
+    },
+  },
 }
 
 lspconfig.rust_analyzer.setup{
@@ -130,4 +153,5 @@ vim.g.gruvbox_contrast_dark = "hard"
 vim.cmd [[colorscheme gruvbox]]
 
 vim.cmd [[highlight Comment guifg=#b8bb26]]
+
 
