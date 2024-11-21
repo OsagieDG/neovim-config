@@ -1,5 +1,6 @@
 require("osagie.core.options")
 
+
 local install_path = vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   vim.fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
@@ -7,21 +8,52 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
 end
 
 require('packer').startup(function(use)
-  use 'wbthomason/packer.nvim' 
+  use 'wbthomason/packer.nvim'
   use {
-    'nvim-treesitter/nvim-treesitter', 
+    'nvim-treesitter/nvim-treesitter',
     run = ':TSUpdate'
   }
-  use 'neovim/nvim-lspconfig' 
-  use 'gruvbox-community/gruvbox' 
-  use 'hrsh7th/nvim-cmp' 
+  use 'neovim/nvim-lspconfig'
+  use 'gruvbox-community/gruvbox'
+  use 'hrsh7th/nvim-cmp'
   use 'hrsh7th/cmp-nvim-lsp'
-  use 'hrsh7th/cmp-buffer' 
-  use 'hrsh7th/cmp-path' 
-  use 'hrsh7th/cmp-cmdline' 
-  use 'L3MON4D3/LuaSnip' 
-  use 'saadparwaiz1/cmp_luasnip' 
+  use 'hrsh7th/cmp-buffer'
+  use 'hrsh7th/cmp-path'
+  use 'hrsh7th/cmp-cmdline'
+  use 'L3MON4D3/LuaSnip'
+  use 'saadparwaiz1/cmp_luasnip'
+  use 'mbbill/undotree'
+
+
+  use {
+    'nvim-telescope/telescope.nvim',
+    requires = { {'nvim-lua/plenary.nvim'} }
+  }
+  use {
+    'nvim-telescope/telescope-fzf-native.nvim',
+    run = 'make'
+  }
+
+
+  use {
+    'glepnir/lspsaga.nvim',
+    branch = 'main',
+    requires = { {'nvim-tree/nvim-web-devicons'} },
+    config = function()
+      require('lspsaga').setup({
+        ui = {
+          hover = { border = "rounded" },
+        },
+        lightbulb = {
+          enable = false,
+          sign = false,
+          virtual_text = false,
+        },
+      })
+    end
+  }
 end)
+
 
 require'nvim-treesitter.configs'.setup {
   ensure_installed = {"go", "odin", "c", "cpp", "lua", "rust", "javascript", "swift"},
@@ -31,6 +63,7 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
+
 local lspconfig = require'lspconfig'
 
 local on_attach = function(client, bufnr)
@@ -38,17 +71,18 @@ local on_attach = function(client, bufnr)
   local opts = { noremap=true, silent=true }
 
   buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'K', '<cmd>Lspsaga hover_doc<CR>', opts) -- Updated hover functionality with lspsaga
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
   buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+  buf_set_keymap('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
   buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
-  buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting_sync()<CR>', opts)
+  buf_set_keymap('n', '<leader>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
+  buf_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting_sync()<CR>', opts)
 end
+
 
 lspconfig.gopls.setup{
   on_attach = on_attach,
@@ -60,35 +94,25 @@ lspconfig.gopls.setup{
 }
 
 lspconfig.clangd.setup{
-  on_attach = on_attach,
+  on_attach = on_attach
 }
 
 lspconfig.lua_ls.setup {
   on_attach = on_attach,
   settings = {
     Lua = {
-      runtime = {
-        version = 'LuaJIT',
-        path = vim.split(package.path, ';')
-      },
-      diagnostics = {
-        globals = {'vim'}
-      },
+      runtime = { version = 'LuaJIT', path = vim.split(package.path, ';') },
+      diagnostics = { globals = {'vim'} },
       workspace = {
         library = vim.api.nvim_get_runtime_file("", true),
         maxPreload = 2000,
         preloadFileSize = 1000,
       },
-      telemetry = {
-        enable = false,
-      },
+      telemetry = { enable = false },
     },
   },
 }
-
-lspconfig.rust_analyzer.setup{
-  on_attach = on_attach,
-}
+lspconfig.rust_analyzer.setup{ on_attach = on_attach }
 
 lspconfig.ts_ls.setup{
   on_attach = on_attach,
@@ -101,14 +125,13 @@ lspconfig.sourcekit.setup {
 lspconfig.ols.setup({
 })
 
+
 local cmp = require'cmp'
 local luasnip = require'luasnip'
 
 cmp.setup({
   snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
+    expand = function(args) luasnip.lsp_expand(args.body) end,
   },
   mapping = cmp.mapping.preset.insert({
     ['<C-p>'] = cmp.mapping.select_prev_item(),
@@ -119,22 +142,14 @@ cmp.setup({
     ['<C-e>'] = cmp.mapping.abort(),
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
     ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      else
-        fallback()
-      end
+      if cmp.visible() then cmp.select_next_item()
+      elseif luasnip.expand_or_jumpable() then luasnip.expand_or_jump()
+      else fallback() end
     end, { 'i', 's' }),
     ['<S-Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
+      if cmp.visible() then cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then luasnip.jump(-1)
+      else fallback() end
     end, { 'i', 's' }),
   }),
   sources = {
@@ -147,11 +162,37 @@ cmp.setup({
 
 vim.o.completeopt = 'menuone,noselect'
 
+
+require('telescope').setup{
+  defaults = {
+    file_ignore_patterns = { "node_modules", ".git" },
+    mappings = {
+      i = {
+        ["<CR>"] = "select_default",
+      },
+    },
+  },
+  pickers = {
+    find_files = { theme = "dropdown" },
+    live_grep = { theme = "ivy" },
+  },
+  extensions = {
+    fzf = {
+      fuzzy = true,
+      override_generic_sorter = true,
+      override_file_sorter = true,
+    },
+  },
+}
+require('telescope').load_extension('fzf')
+
+
 vim.o.background = "dark"
 vim.g.gruvbox_contrast_dark = "hard"
-
 vim.cmd [[colorscheme gruvbox]]
-
 vim.cmd [[highlight Comment guifg=#b8bb26]]
 
 
+vim.cmd [[highlight ExtraWhitespace guibg=#FF0000]]
+vim.cmd [[match ExtraWhitespace /\s\+$/]]
+vim.cmd [[command! TrimTrailingSpaces %s/\s\+$//e]]
