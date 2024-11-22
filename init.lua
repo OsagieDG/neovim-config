@@ -1,44 +1,44 @@
 require("osagie.core.options")
 
-
-local install_path = vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-  vim.fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
-  vim.cmd [[packadd packer.nvim]]
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if vim.fn.isdirectory(lazypath) == 0 then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", 
+    lazypath,
+  })
 end
 
-require('packer').startup(function(use)
-  use 'wbthomason/packer.nvim'
-  use {
-    'nvim-treesitter/nvim-treesitter',
-    run = ':TSUpdate'
-  }
-  use 'neovim/nvim-lspconfig'
-  use 'gruvbox-community/gruvbox'
-  use 'hrsh7th/nvim-cmp'
-  use 'hrsh7th/cmp-nvim-lsp'
-  use 'hrsh7th/cmp-buffer'
-  use 'hrsh7th/cmp-path'
-  use 'hrsh7th/cmp-cmdline'
-  use 'L3MON4D3/LuaSnip'
-  use 'saadparwaiz1/cmp_luasnip'
-  use 'mbbill/undotree'
+vim.opt.rtp:prepend(lazypath)
 
+require("lazy").setup({
+  { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+  { 'neovim/nvim-lspconfig' },
+  { 'hrsh7th/nvim-cmp' },
+  { 'hrsh7th/cmp-nvim-lsp' },
+  { 'hrsh7th/cmp-buffer' },
+  { 'hrsh7th/cmp-path' },
+  { 'hrsh7th/cmp-cmdline' },
+  { 'L3MON4D3/LuaSnip' },
+  { 'saadparwaiz1/cmp_luasnip' },
+  { 'mbbill/undotree' },
 
-  use {
+  {
     'nvim-telescope/telescope.nvim',
-    requires = { {'nvim-lua/plenary.nvim'} }
-  }
-  use {
+    dependencies = { 'nvim-lua/plenary.nvim' },
+  },
+  {
     'nvim-telescope/telescope-fzf-native.nvim',
-    run = 'make'
-  }
+    build = 'make',
+  },
 
-
-  use {
+  {
     'glepnir/lspsaga.nvim',
     branch = 'main',
-    requires = { {'nvim-tree/nvim-web-devicons'} },
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
       require('lspsaga').setup({
         ui = {
@@ -50,9 +50,21 @@ require('packer').startup(function(use)
           virtual_text = false,
         },
       })
-    end
-  }
-end)
+    end,
+  },
+
+
+  {
+    'gruvbox-community/gruvbox',
+    config = function()
+      vim.o.background = "dark"
+      vim.g.gruvbox_contrast_dark = "hard"
+      vim.cmd [[colorscheme gruvbox]]
+      vim.cmd [[highlight Comment guifg=#b8bb26]]
+    end,
+  },
+
+  })
 
 
 require'nvim-treesitter.configs'.setup {
@@ -63,9 +75,7 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
-
 local lspconfig = require'lspconfig'
-
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local opts = { noremap=true, silent=true }
@@ -83,7 +93,6 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting_sync()<CR>', opts)
 end
 
-
 lspconfig.gopls.setup{
   on_attach = on_attach,
   settings = {
@@ -93,8 +102,8 @@ lspconfig.gopls.setup{
   },
 }
 
-lspconfig.clangd.setup{
-  on_attach = on_attach
+lspconfig.clangd.setup{ 
+  on_attach = on_attach 
 }
 
 lspconfig.lua_ls.setup {
@@ -112,17 +121,21 @@ lspconfig.lua_ls.setup {
     },
   },
 }
-lspconfig.rust_analyzer.setup{ on_attach = on_attach }
 
-lspconfig.ts_ls.setup{
-  on_attach = on_attach,
+lspconfig.rust_analyzer.setup{ 
+  on_attach = on_attach 
 }
 
-lspconfig.sourcekit.setup {
-  on_attach = on_attach,
+lspconfig.ts_ls.setup{ 
+  on_attach = on_attach 
+}
+
+lspconfig.sourcekit.setup{ 
+  on_attach = on_attach 
 }
 
 lspconfig.ols.setup({
+  
 })
 
 
@@ -159,7 +172,6 @@ cmp.setup({
     { name = 'path' },
   },
 })
-
 vim.o.completeopt = 'menuone,noselect'
 
 
@@ -187,12 +199,5 @@ require('telescope').setup{
 require('telescope').load_extension('fzf')
 
 
-vim.o.background = "dark"
-vim.g.gruvbox_contrast_dark = "hard"
-vim.cmd [[colorscheme gruvbox]]
-vim.cmd [[highlight Comment guifg=#b8bb26]]
-
-
-vim.cmd [[highlight ExtraWhitespace guibg=#FF0000]]
-vim.cmd [[match ExtraWhitespace /\s\+$/]]
 vim.cmd [[command! TrimTrailingSpaces %s/\s\+$//e]]
+
