@@ -3,9 +3,8 @@
 This repository includes LSP configurations for C, C++, Go, Odin, Lua,
 Swift, Rust and Javascript
 
-![gg](https://github.com/osag1e/my-neovim-config/blob/main/images/gg.png)
+![n+t](https://github.com/osag1e/my-neovim-config/blob/main/images/nvim+tmux.png)
 
-![tff](https://github.com/osag1e/my-neovim-config/blob/main/images/tff.png)
 
 
 
