@@ -26,6 +26,23 @@ require("lazy").setup({
   { 'saadparwaiz1/cmp_luasnip' },
   { 'mbbill/undotree' },
 
+
+  {
+    "ellisonleao/gruvbox.nvim",
+    dependencies = { "rktjmp/lush.nvim" },
+    config = function()
+      vim.g.gruvbox_transparent_bg = true
+      vim.cmd("colorscheme gruvbox")
+      vim.cmd([[
+        highlight Normal guibg=NONE ctermbg=NONE
+        highlight LineNr guibg=NONE ctermbg=NONE
+        highlight SignColumn guibg=NONE ctermbg=NONE
+        highlight EndOfBuffer guibg=NONE ctermbg=NONE
+      ]])
+    end
+  },
+
+
   {
     'nvim-telescope/telescope.nvim',
     dependencies = { 'nvim-lua/plenary.nvim' },
