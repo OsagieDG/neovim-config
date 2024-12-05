@@ -7,7 +7,7 @@ if vim.fn.isdirectory(lazypath) == 0 then
     "clone",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", 
+    "--branch=stable",
     lazypath,
   })
 end
@@ -102,8 +102,8 @@ lspconfig.gopls.setup{
   },
 }
 
-lspconfig.clangd.setup{ 
-  on_attach = on_attach 
+lspconfig.clangd.setup{
+  on_attach = on_attach
 }
 
 lspconfig.lua_ls.setup {
@@ -122,20 +122,41 @@ lspconfig.lua_ls.setup {
   },
 }
 
-lspconfig.rust_analyzer.setup{ 
-  on_attach = on_attach 
+lspconfig.rust_analyzer.setup{
+  on_attach = on_attach
 }
 
-lspconfig.ts_ls.setup{ 
-  on_attach = on_attach 
+lspconfig.ts_ls.setup{
+  on_attach = on_attach
 }
 
-lspconfig.sourcekit.setup{ 
-  on_attach = on_attach 
+lspconfig.sourcekit.setup{
+  on_attach = on_attach,
+  root_dir=require('lspconfig.util').root_pattern("Package.swift", ".git", ".")
 }
 
 lspconfig.ols.setup({
-  
+
+})
+
+
+local util = require('lspconfig.util')
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+local cmp_nvim_lsp = require('cmp_nvim_lsp')
+capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+
+lspconfig["mojo"].setup({
+  cmd = { 'mojo-lsp-server' },
+	root_dir = util.find_git_ancestor,
+	single_file_support = true,
+	capabilities = capabilities,
+	on_attach = function(client, bufnr)
+		on_attach(client, bufnr)
+		vim.keymap.set("n", "<leader>fmt",
+			function() vim.cmd("noa silent !mojo format --quiet " .. vim.fn.expand("%:p")) end) -- manually format document
+	end,
+	filetypes = { "mojo", "*.🔥" },
 })
 
 

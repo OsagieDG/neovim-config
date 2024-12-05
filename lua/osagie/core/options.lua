@@ -1,8 +1,8 @@
-local opt = vim.opt -- for conciseness 
+local opt = vim.opt -- for conciseness
 
 -- line numbers
 opt.relativenumber = true
-opt.number = true 
+opt.number = true
 
 -- tabs & identation
 opt.tabstop = 2
@@ -17,10 +17,10 @@ opt.wrap = false
 opt.ignorecase = true
 opt.smartcase = true
 
--- cursor line 
+-- cursor line
 opt.cursorline = true
 
--- appereance 
-opt.termguicolors = true 
+-- appereance
+opt.termguicolors = true
 opt.background = "dark"
 opt.signcolumn = "yes"
