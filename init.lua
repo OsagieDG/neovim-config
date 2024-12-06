@@ -85,7 +85,7 @@ require("lazy").setup({
 
 
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = {"go", "odin", "c", "cpp", "lua", "rust", "javascript", "swift"},
+  ensure_installed = {"go", "odin", "c", "cpp", "lua", "javascript", "typescript", "python"},
   highlight = {
     enable = true,
     additional_vim_regex_highlighting = false,
@@ -139,22 +139,28 @@ lspconfig.lua_ls.setup {
   },
 }
 
-lspconfig.rust_analyzer.setup{
-  on_attach = on_attach
-}
-
 lspconfig.ts_ls.setup{
   on_attach = on_attach
-}
-
-lspconfig.sourcekit.setup{
-  on_attach = on_attach,
-  root_dir=require('lspconfig.util').root_pattern("Package.swift", ".git", ".")
 }
 
 lspconfig.ols.setup({
 
 })
+
+
+lspconfig.pyright.setup{
+  on_attach = on_attach,
+  settings = {
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = "workspace",
+        typeCheckingMode = "basic",
+      },
+    },
+  },
+}
 
 
 local util = require('lspconfig.util')
