@@ -163,15 +163,13 @@ lspconfig.pyright.setup{
 }
 
 
-local util = require('lspconfig.util')
-
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 local cmp_nvim_lsp = require('cmp_nvim_lsp')
 capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
 
 lspconfig["mojo"].setup({
   cmd = { 'mojo-lsp-server' },
-	root_dir = util.find_git_ancestor,
+	root_dir = vim.fs.dirname,
 	single_file_support = true,
 	capabilities = capabilities,
 	on_attach = function(client, bufnr)
