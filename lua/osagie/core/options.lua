@@ -24,3 +24,6 @@ opt.cursorline = true
 opt.termguicolors = true
 opt.background = "dark"
 opt.signcolumn = "yes"
+
+-- completion settings
+vim.o.completeopt = 'menuone,noselect'
