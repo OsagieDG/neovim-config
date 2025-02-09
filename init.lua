@@ -2,7 +2,6 @@ require("osagie.core.options")
 require("osagie.core.keymaps")
 require("osagie.core.autocommands")
 
-
 require("osagie.plugins")
 require("osagie.plugins.lsp")
 require("osagie.plugins.cmp")
