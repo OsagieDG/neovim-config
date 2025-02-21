@@ -40,7 +40,6 @@ lspconfig.ols.setup({
 
 })
 
-
 lspconfig.pyright.setup {
   on_attach = on_attach,
   settings = {
@@ -55,6 +54,51 @@ lspconfig.pyright.setup {
   },
 }
 
+lspconfig.html.setup {
+  on_attach = on_attach,
+  settings = {
+    html = {
+      suggest = {
+        html5 = true,
+      },
+      format = {
+        enable = true,
+      },
+      diagnostics = {
+        enable = true,
+        validate = true,
+      },
+    },
+  },
+}
+
+lspconfig.cssls.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+}
+
+local lsp_flags = { debounce_text_changes = 150 }
+
+lspconfig.yamlls.setup {
+  on_attach = function(client, bufnr)
+    client.server_capabilities.documentFormattingProvider = true
+    on_attach(client, bufnr)
+  end,
+  flags = lsp_flags,
+  capabilities = capabilities,
+  settings = {
+    yaml = {
+      format = {
+        enable = true
+      },
+      schemaStore = {
+        enable = true
+      }
+    }
+  }
+}
+
+
 local lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
 local cmp_nvim_lsp = require('cmp_nvim_lsp')
 lsp_capabilities = cmp_nvim_lsp.default_capabilities(lsp_capabilities)
@@ -67,8 +111,7 @@ lspconfig["mojo"].setup({
   on_attach = function(client, bufnr)
     on_attach(client, bufnr)
     vim.keymap.set("n", "<leader>fmt",
-      function() vim.cmd("noa silent !mojo format --quiet " .. vim.fn.expand("%:p")) end) -- manually format document
+      function() vim.cmd("noa silent !mojo format --quiet " .. vim.fn.expand("%:p")) end) -- manually format
   end,
   filetypes = { "mojo", "*.🔥" },
 })
-
