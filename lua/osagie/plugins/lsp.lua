@@ -32,6 +32,12 @@ lspconfig.lua_ls.setup {
   }
 }
 
+
+lspconfig.rust_analyzer.setup {
+  on_attach = on_attach,
+}
+
+
 lspconfig.ts_ls.setup {
   on_attach = on_attach
 }
