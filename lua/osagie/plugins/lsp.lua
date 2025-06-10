@@ -32,6 +32,15 @@ lspconfig.lua_ls.setup {
   }
 }
 
+lspconfig.sourcekit.setup {
+  capabilities = {
+    workspace = {
+      didChangeWatchedFiles = {
+        dynamicRegistration = true,
+      },
+    },
+  },
+}
 
 lspconfig.rust_analyzer.setup {
   on_attach = on_attach,
