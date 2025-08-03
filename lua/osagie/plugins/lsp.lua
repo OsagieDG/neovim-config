@@ -3,8 +3,10 @@ local lspconfig = require 'lspconfig'
 local on_attach = function(client, bufnr)
   client = client
   local opts = { noremap = true, silent = true }
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd',
+    '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K',
+    '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
 end
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -42,18 +44,11 @@ lspconfig.sourcekit.setup {
   },
 }
 
-lspconfig.rust_analyzer.setup {
-  on_attach = on_attach,
-}
-
 
 lspconfig.ts_ls.setup {
   on_attach = on_attach
 }
 
-lspconfig.ols.setup({
-
-})
 
 lspconfig.pyright.setup {
   on_attach = on_attach,
@@ -126,7 +121,10 @@ lspconfig["mojo"].setup({
   on_attach = function(client, bufnr)
     on_attach(client, bufnr)
     vim.keymap.set("n", "<leader>fmt",
-      function() vim.cmd("noa silent !mojo format --quiet " .. vim.fn.expand("%:p")) end) -- manually format
+      function()
+        vim.cmd("noa silent !mojo format --quiet "
+          .. vim.fn.expand("%:p"))
+      end) -- manually format
   end,
   filetypes = { "mojo", "*.🔥" },
 })
