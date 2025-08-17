@@ -1,7 +1,8 @@
 require 'nvim-treesitter.configs'.setup {
-  ensure_installed = { "go", "c", "cpp", "swift",
-    "lua", "javascript", "python",
-    "html", "css", "yaml" },
+  ensure_installed = { "c", "go", "lua", "odin", "swift",
+    "javascript", "svelte",
+    "python", "html", "css",
+    "yaml" },
   ignore_install = {},
   sync_install = false,
   auto_install = true,

@@ -18,7 +18,8 @@ lspconfig.gopls.setup {
 }
 
 lspconfig.clangd.setup {
-  on_attach = on_attach
+  on_attach = on_attach,
+  capabilities = capabilities,
 }
 
 lspconfig.lua_ls.setup {
@@ -44,11 +45,21 @@ lspconfig.sourcekit.setup {
   },
 }
 
-
 lspconfig.ts_ls.setup {
-  on_attach = on_attach
+  on_attach = on_attach,
+  capabilities = capabilities,
+  filetypes = { "javascript", "typescript" }
 }
 
+lspconfig.ols.setup({
+  on_attach = on_attach,
+  capabilities = capabilities,
+})
+
+lspconfig.svelte.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+}
 
 lspconfig.pyright.setup {
   on_attach = on_attach,
