@@ -51,9 +51,18 @@ lspconfig.ts_ls.setup {
   filetypes = { "javascript", "typescript" }
 }
 
-lspconfig.svelte.setup {
+lspconfig.pyright.setup {
   on_attach = on_attach,
-  capabilities = capabilities,
+  settings = {
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = "workspace",
+        typeCheckingMode = "basic",
+      },
+    },
+  },
 }
 
 lspconfig.html.setup {
@@ -99,3 +108,24 @@ lspconfig.yamlls.setup {
     }
   }
 }
+
+
+local lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
+local cmp_nvim_lsp = require('cmp_nvim_lsp')
+lsp_capabilities = cmp_nvim_lsp.default_capabilities(lsp_capabilities)
+
+lspconfig["mojo"].setup({
+  cmd = { 'mojo-lsp-server' },
+  root_dir = vim.fs.dirname,
+  single_file_support = true,
+  capabilities = lsp_capabilities,
+  on_attach = function(client, bufnr)
+    on_attach(client, bufnr)
+    vim.keymap.set("n", "<leader>fmt",
+      function()
+        vim.cmd("noa silent !mojo format --quiet "
+          .. vim.fn.expand("%:p"))
+      end) -- manually format
+  end,
+  filetypes = { "mojo", "*.🔥" },
+})
