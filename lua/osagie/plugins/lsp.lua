@@ -1,41 +1,26 @@
-local lspconfig = require 'lspconfig'
-
 local on_attach = function(client, bufnr)
   client = client
-  local opts = { noremap = true, silent = true }
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd',
-    '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K',
-    '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  local opts = { noremap = true, silent = true, buffer = bufnr }
+  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+  vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
 end
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-lspconfig.gopls.setup {
+vim.lsp.config('gopls', {
   on_attach = on_attach,
   capabilities = capabilities,
-  settings = { gopls = { gofumpt = true } }
-}
+  settings = { gopls = { gofumpt = true } },
+})
 
-lspconfig.clangd.setup {
+vim.lsp.config('clangd', {
   on_attach = on_attach,
   capabilities = capabilities,
-}
+})
 
-lspconfig.lua_ls.setup {
+
+vim.lsp.config("sourcekit", {
   on_attach = on_attach,
-  capabilities = capabilities,
-  settings = {
-    Lua = {
-      runtime = { version = 'LuaJIT' },
-      diagnostics = { globals = { 'vim' } },
-      workspace = { library = vim.api.nvim_get_runtime_file("", true) },
-      telemetry = { enable = false }
-    }
-  }
-}
-
-lspconfig.sourcekit.setup {
   capabilities = {
     workspace = {
       didChangeWatchedFiles = {
@@ -43,16 +28,40 @@ lspconfig.sourcekit.setup {
       },
     },
   },
-}
+  filetypes = { "swift" },
+})
 
-lspconfig.ts_ls.setup {
+
+vim.lsp.config('rust_analyzer', {
   on_attach = on_attach,
   capabilities = capabilities,
-  filetypes = { "javascript", "typescript" }
-}
+})
 
-lspconfig.pyright.setup {
+
+vim.lsp.config('lua_ls', {
   on_attach = on_attach,
+  capabilities = capabilities,
+  cmd = { "lua-language-server" },
+  filetypes = { "lua" },
+  settings = {
+    Lua = {
+      runtime = { version = 'LuaJIT' },
+      diagnostics = { globals = { 'vim' } },
+      workspace = { library = vim.api.nvim_get_runtime_file("", true) },
+      telemetry = { enable = false },
+    },
+  },
+})
+
+vim.lsp.config('ts_ls', {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  filetypes = { "javascript", "typescript" },
+})
+
+vim.lsp.config('pyright', {
+  on_attach = on_attach,
+  capabilities = capabilities,
   settings = {
     python = {
       analysis = {
@@ -63,69 +72,64 @@ lspconfig.pyright.setup {
       },
     },
   },
-}
+})
 
-lspconfig.html.setup {
-  on_attach = on_attach,
-  settings = {
-    html = {
-      suggest = {
-        html5 = true,
-      },
-      format = {
-        enable = true,
-      },
-      diagnostics = {
-        enable = true,
-        validate = true,
+vim.lsp.config('html',
+  {
+    on_attach = on_attach,
+    settings = {
+      html = {
+        suggest = { html5 = true },
+        format = { enable = true },
+        diagnostics = {
+          enable = true,
+          validate = true
+        },
       },
     },
-  },
-}
+  })
 
-lspconfig.cssls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-}
+vim.lsp.config('cssls',
+  {
+    on_attach = on_attach,
+    capabilities = capabilities,
+  })
 
-local lsp_flags = { debounce_text_changes = 150 }
-
-lspconfig.yamlls.setup {
+vim.lsp.config('yamlls', {
   on_attach = function(client, bufnr)
     client.server_capabilities.documentFormattingProvider = true
     on_attach(client, bufnr)
   end,
-  flags = lsp_flags,
+  flags = { debounce_text_changes = 150 },
   capabilities = capabilities,
   settings = {
-    yaml = {
-      format = {
-        enable = true
-      },
-      schemaStore = {
-        enable = true
-      }
-    }
+    yaml = { format = { enable = true }, schemaStore = { enable = true } }
   }
-}
+})
 
-
-local lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
-local cmp_nvim_lsp = require('cmp_nvim_lsp')
-lsp_capabilities = cmp_nvim_lsp.default_capabilities(lsp_capabilities)
-
-lspconfig["mojo"].setup({
+vim.lsp.config('mojo', {
   cmd = { 'mojo-lsp-server' },
-  root_dir = vim.fs.dirname,
   single_file_support = true,
-  capabilities = lsp_capabilities,
+  capabilities = capabilities,
   on_attach = function(client, bufnr)
     on_attach(client, bufnr)
-    vim.keymap.set("n", "<leader>fmt",
-      function()
-        vim.cmd("noa silent !mojo format --quiet "
-          .. vim.fn.expand("%:p"))
-      end) -- manually format
+    vim.keymap.set("n", "<leader>fmt", function()
+      vim.cmd("noa silent !mojo format --quiet " .. vim.fn.expand("%:p"))
+    end, { buffer = bufnr })
   end,
-  filetypes = { "mojo", "*.🔥" },
+  filetypes = { "mojo" },
+})
+
+vim.lsp.enable({
+  'gopls',
+  'sourcekit',
+  'clangd',
+  'rust_analyzer',
+  'lua_ls',
+  'ts_ls',
+  'pyright',
+  'html',
+  'cssls',
+  'yamlls',
+  'mojo',
 })
