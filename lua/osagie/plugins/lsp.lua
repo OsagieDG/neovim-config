@@ -18,6 +18,15 @@ vim.lsp.config('clangd', {
   capabilities = capabilities,
 })
 
+vim.lsp.config('ols', {
+  on_attach = on_attach,
+  capabilities = capabilities,
+})
+
+vim.lsp.config('svelte', {
+  on_attach = on_attach,
+  capabilities = capabilities,
+})
 
 vim.lsp.config("sourcekit", {
   on_attach = on_attach,
@@ -139,7 +148,9 @@ vim.lsp.enable({
   'gopls',
   'sourcekit',
   'clangd',
+  'ols',
   'kotlin_lsp',
+  'svelte',
   'rust_analyzer',
   'lua_ls',
   'ts_ls',

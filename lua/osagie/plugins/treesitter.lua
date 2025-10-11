@@ -1,8 +1,14 @@
 require 'nvim-treesitter.configs'.setup {
-  ensure_installed = { "c", "lua", "go", "swift",
-    "kotlin", "javascript", "python", "rust",
+  ensure_installed = {
+    "c", "lua",
+    "go", "odin",
+    "swift", "kotlin",
+    "javascript", "python",
+    "svelte", "rust",
     "html", "css",
-    "yaml" },
+    "yaml",
+  },
+
   ignore_install = {},
   sync_install = false,
   auto_install = true,
@@ -18,5 +24,4 @@ require 'nvim-treesitter.configs'.setup {
 
   modules = {
   },
-
 }
