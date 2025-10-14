@@ -58,8 +58,22 @@ require("lazy").setup({
   {
     'gruvbox-community/gruvbox',
   },
-})
 
+  {
+    "keith/swift.vim",
+    ft = "swift",
+  },
+
+  {
+    "wojciech-kulik/xcodebuild.nvim",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+    },
+    config = function()
+      require("xcodebuild").setup()
+    end,
+  },
+})
 
 vim.diagnostic.config({
   virtual_text = true,

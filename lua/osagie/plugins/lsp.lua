@@ -29,6 +29,9 @@ vim.lsp.config('svelte', {
 })
 
 vim.lsp.config("sourcekit", {
+  cmd = { "xcrun", "sourcekit-lsp" },
+  filetypes = { "swift", "objective-c", "objective-cpp" },
+  root_dir = vim.fs.root(0, { "Package.swift", ".git" }),
   on_attach = on_attach,
   capabilities = {
     workspace = {
@@ -37,7 +40,6 @@ vim.lsp.config("sourcekit", {
       },
     },
   },
-  filetypes = { "swift" },
 })
 
 vim.lsp.config("kotlin_lsp", {
