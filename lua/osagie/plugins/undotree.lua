@@ -1,3 +1,5 @@
+vim.cmd('packadd nvim.undotree')
+
 -- Enable Persistent Undo
 vim.opt.undofile = true
 
@@ -20,4 +22,3 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.fn.system(cmd)
   end,
 })
-

@@ -13,7 +13,22 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-  { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+  {
+    'nvim-treesitter/nvim-treesitter',
+    lazy = false,
+    build = ':TSUpdate',
+    config = function()
+      require('nvim-treesitter').install({
+        "c", "lua",
+        "go", "odin",
+        "swift", "kotlin",
+        "javascript", "python",
+        "svelte", "rust",
+        "html", "css",
+        "yaml",
+      })
+    end,
+  },
   { 'neovim/nvim-lspconfig' },
   { 'hrsh7th/nvim-cmp' },
   { 'hrsh7th/cmp-nvim-lsp' },
@@ -22,7 +37,6 @@ require("lazy").setup({
   { 'hrsh7th/cmp-cmdline' },
   { 'L3MON4D3/LuaSnip' },
   { 'saadparwaiz1/cmp_luasnip' },
-  { 'mbbill/undotree' },
 
   {
     'nvim-telescope/telescope.nvim',
