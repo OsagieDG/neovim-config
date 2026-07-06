@@ -25,7 +25,7 @@ require("lazy").setup({
         ensure_installed = {
           "c", "lua",
           "go", "odin",
-          "swift", "kotlin",
+          "swift",
           "javascript", "python",
           "svelte", "rust",
           "html", "css",

@@ -42,21 +42,6 @@ vim.lsp.config("sourcekit", {
   },
 })
 
-vim.lsp.config("kotlin_lsp", {
-  cmd = { "kotlin-language-server" },
-  filetypes = { "kotlin" },
-  root_dir = vim.fs.root(0, {
-    "settings.gradle",
-    "settings.gradle.kts",
-    "build.gradle",
-    "build.gradle.kts",
-    ".git"
-  }),
-  on_attach = on_attach,
-  capabilities = capabilities,
-})
-
-
 
 vim.lsp.config('rust_analyzer', {
   on_attach = on_attach,
@@ -151,7 +136,6 @@ vim.lsp.enable({
   'sourcekit',
   'clangd',
   'ols',
-  'kotlin_lsp',
   'svelte',
   'rust_analyzer',
   'lua_ls',
