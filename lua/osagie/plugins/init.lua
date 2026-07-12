@@ -1,5 +1,4 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
     "git",
@@ -10,7 +9,6 @@ if not vim.loop.fs_stat(lazypath) then
     lazypath,
   })
 end
-
 vim.opt.rtp:prepend(lazypath)
 
 -- Plugins
@@ -18,43 +16,52 @@ require("lazy").setup({
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
+    branch = "main",
     lazy = false,
+    build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter").setup({
-        ensure_installed = {
-          "c", "lua",
-          "go", "odin",
-          "swift",
-          "javascript", "python",
-          "svelte", "rust",
-          "html", "css",
-          "yaml",
-        },
+      local ts = require("nvim-treesitter")
+      ts.setup({
+        install_dir = vim.fn.stdpath("data") .. "/site",
+      })
 
-        highlight = {
-          enable = true,
-        },
+      local parsers = {
+        "c", "lua",
+        "go", "odin",
+        "swift",
+        "javascript", "python",
+        "svelte", "rust",
+        "html", "css",
+        "yaml",
+      }
 
-        auto_install = true,
+      local installed = ts.get_installed and ts.get_installed() or {}
+      local to_install = vim.tbl_filter(function(p)
+        return not vim.tbl_contains(installed, p)
+      end, parsers)
+      if #to_install > 0 then
+        ts.install(to_install)
+      end
+
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = parsers,
+        callback = function()
+          pcall(vim.treesitter.start)
+        end,
       })
     end,
   },
-
   -- LSP
   { "neovim/nvim-lspconfig" },
-
   -- Completion
   { "hrsh7th/nvim-cmp" },
   { "hrsh7th/cmp-nvim-lsp" },
   { "hrsh7th/cmp-buffer" },
   { "hrsh7th/cmp-path" },
   { "hrsh7th/cmp-cmdline" },
-
   -- Snippets
   { "L3MON4D3/LuaSnip" },
   { "saadparwaiz1/cmp_luasnip" },
-
   -- Telescope
   {
     "nvim-telescope/telescope.nvim",
@@ -63,12 +70,10 @@ require("lazy").setup({
       require("telescope").setup({})
     end,
   },
-
   {
     "nvim-telescope/telescope-fzf-native.nvim",
     build = "make",
   },
-
   -- LSP UI
   {
     "glepnir/lspsaga.nvim",
@@ -87,18 +92,15 @@ require("lazy").setup({
       })
     end,
   },
-
   -- Theme
   {
     "gruvbox-community/gruvbox",
   },
-
   -- Swift
   {
     "keith/swift.vim",
     ft = "swift",
   },
-
   -- Xcode tools
   {
     "wojciech-kulik/xcodebuild.nvim",
@@ -110,7 +112,6 @@ require("lazy").setup({
     end,
   },
 })
-
 -- Diagnostics
 vim.diagnostic.config({
   virtual_text = true,
