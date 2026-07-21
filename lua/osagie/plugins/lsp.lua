@@ -7,10 +7,16 @@ end
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-vim.lsp.config('gopls', {
+vim.lsp.config("gopls", {
   on_attach = on_attach,
   capabilities = capabilities,
-  settings = { gopls = { gofumpt = true } },
+  settings = {
+    gopls = {
+      gofumpt = true,
+      analyses = { modernize = false },
+      buildFlags = { "-tags=integration" },
+    },
+  },
 })
 
 vim.lsp.config('clangd', {
