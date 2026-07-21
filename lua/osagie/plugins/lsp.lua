@@ -13,6 +13,8 @@ vim.lsp.config("gopls", {
   settings = {
     gopls = {
       gofumpt = true,
+      -- Stops the editor from suggesting standard lib modernization.
+      -- This reduces editor noise.
       analyses = { modernize = false },
       buildFlags = { "-tags=integration" },
     },
