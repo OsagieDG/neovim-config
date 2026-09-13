@@ -6,3 +6,4 @@ keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.format({ async = false })<CR>', o
 keymap('n', '<leader>ff', ':Telescope find_files<CR>', opts)
 keymap('n', '<leader>u', ':Undotree<CR>', opts)
 keymap('n', '<leader>fb', ':Telescope buffers<CR>', opts)
+keymap('n', '<leader>gs', ':Telescope git_status<CR>', opts)
